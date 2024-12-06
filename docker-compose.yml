@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql
+    platform: linux/amd64
+    container_name: "mysql_cnt"
+    environment:
+      MYSQL_DATABASE: weather_rt
+      MYSQL_USER: weather_rt
+      MYSQL_PASSWORD: weather_rt
+      MYSQL_ROOT_PASSWORD: weather_rt
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_volume:/var/lib/mysql
+
+  backend:
+    container_name: backend-cnt
+    image: backend-image
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DEBUG=true
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/backend
+    depends_on:
+      - db
+volumes:
+  mysql_volume:
