@@ -29,5 +29,6 @@ class PollutionData(models.Model):
     )
 
 
+    # For admin page   
     def __str__(self):
         return f"Pollution Data at {self.timestamp}"
