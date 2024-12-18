@@ -36,6 +36,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://0.0.0.0',
     "http://127.0.0.1:3000",
     "http://localhost:3000",
+    "http://20.79.48.161:3000",
+    "http://20.79.48.161",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -66,6 +68,7 @@ MIDDLEWARE = [
 
 INTERNAL_IPS = [
     '127.0.0.1',
+    '20.79.48.161',
 ]
 ROOT_URLCONF = 'server.urls'
 
