@@ -33,6 +33,8 @@ ALLOWED_HOSTS = ["*"]
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1',
     'http://localhost',
+    'http://localhost:3002',
+    'http://localhost:3001',
     'http://0.0.0.0',
     "http://127.0.0.1:3000",
     "http://localhost:3000",
@@ -54,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'pollution_data',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
