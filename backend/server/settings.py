@@ -31,6 +31,15 @@ ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_NULL_ORIGIN = True
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Replace with your email provider's SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'lifeeasy.fra@gmail.com'  # Your email address
+# Your email password (use app password if 2FA is enabled)
+EMAIL_HOST_PASSWORD = 'G3tch@tGTP2024'
+
 
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1',

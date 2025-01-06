@@ -282,3 +282,20 @@ canvas {
     font-size: 1.1em;
     color: rgba(255, 255, 255, 0.9);
 }
+
+.quality-status {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.quality-good {
+    color: green;
+}
+
+.quality-medium {
+    color: orange;
+}
+
+.quality-bad {
+    color: red;
+}

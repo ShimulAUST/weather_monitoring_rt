@@ -1,5 +1,7 @@
 from django.db import models
 
+from django.contrib.postgres.fields import JSONField
+
 
 class PollutionData(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -28,7 +30,23 @@ class PollutionData(models.Model):
         help_text="Dust concentration in µg/m³ from PPD42 sensor"
     )
 
+    # For admin page
 
-    # For admin page   
     def __str__(self):
         return f"Pollution Data at {self.timestamp}"
+
+
+class OverallStatusLog(models.Model):
+    timestamp = models.DateTimeField()
+    overall_status = models.CharField(max_length=10)
+    temperature = models.FloatField(null=True, blank=True)
+    humidity = models.FloatField(null=True, blank=True)
+    air_quality = models.FloatField(null=True, blank=True)
+    gas_mq2 = models.FloatField(null=True, blank=True)
+    gas_mq4 = models.FloatField(null=True, blank=True)
+    dust = models.FloatField(null=True, blank=True)
+    # To store quality as JSON
+    quality_status = JSONField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.timestamp} - {self.overall_status}"

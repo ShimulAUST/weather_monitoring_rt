@@ -74,7 +74,10 @@ const Dashboard = () => {
         dust: "today",
     });
 
+
     const MAX_TODAY_DATA_POINTS = 50;
+    const [quality, setQuality] = useState({}); // Added to store Good/Medium/Bad status
+    const [overallStatus, setOverallStatus] = useState("Good"); // Default to Good
 
     // Fetch data from API
     const fetchData = async () => {
@@ -120,8 +123,136 @@ const Dashboard = () => {
             avg[key] = counts[key] > 0 ? (sums[key] / counts[key]).toFixed(2) : 0;
         });
 
+        const { qualityStatuses, scores } = calculateQuality(avg);
+
+        // Calculate total score
+        const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
+
+        // Determine overall environment status
+        let overallStatus = "Good";
+        if (totalScore >= 16) {
+            overallStatus = "Bad";
+        } else if (totalScore >= 11) {
+            overallStatus = "Moderate";
+        }
+
         setAverages(avg);
+        setQuality(qualityStatuses); // Update quality status
+        setOverallStatus(overallStatus); // Update overall status
     };
+
+
+
+    const calculateQuality = (averages) => {
+        const qualityStatuses = {};
+        const scores = {};
+
+        // Temperature
+        if (averages.temperature < 15 || averages.temperature > 30) {
+            qualityStatuses.temperature = "Bad";
+            scores.temperature = 3;
+        } else if (averages.temperature < 20 || averages.temperature > 26) {
+            qualityStatuses.temperature = "Medium";
+            scores.temperature = 2;
+        } else {
+            qualityStatuses.temperature = "Good";
+            scores.temperature = 1;
+        }
+
+        // Humidity
+        if (averages.humidity < 20 || averages.humidity > 80) {
+            qualityStatuses.humidity = "Bad";
+            scores.humidity = 3;
+        } else if (averages.humidity < 30 || averages.humidity > 60) {
+            qualityStatuses.humidity = "Medium";
+            scores.humidity = 2;
+        } else {
+            qualityStatuses.humidity = "Good";
+            scores.humidity = 1;
+        }
+
+        // Air Quality
+        if (averages.air_quality > 3000) {
+            qualityStatuses.air_quality = "Bad";
+            scores.air_quality = 3;
+        } else if (averages.air_quality >= 1000) {
+            qualityStatuses.air_quality = "Medium";
+            scores.air_quality = 2;
+        } else {
+            qualityStatuses.air_quality = "Good";
+            scores.air_quality = 1;
+        }
+
+        // Gas MQ2
+        if (averages.gas_mq2 > 2000) {
+            qualityStatuses.gas_mq2 = "Bad";
+            scores.gas_mq2 = 3;
+        } else if (averages.gas_mq2 >= 500) {
+            qualityStatuses.gas_mq2 = "Medium";
+            scores.gas_mq2 = 2;
+        } else {
+            qualityStatuses.gas_mq2 = "Good";
+            scores.gas_mq2 = 1;
+        }
+
+        // Gas MQ4
+        if (averages.gas_mq4 > 2000) {
+            qualityStatuses.gas_mq4 = "Bad";
+            scores.gas_mq4 = 3;
+        } else if (averages.gas_mq4 >= 500) {
+            qualityStatuses.gas_mq4 = "Medium";
+            scores.gas_mq4 = 2;
+        } else {
+            qualityStatuses.gas_mq4 = "Good";
+            scores.gas_mq4 = 1;
+        }
+
+        // Dust
+        if (averages.dust > 200) {
+            qualityStatuses.dust = "Bad";
+            scores.dust = 3;
+        } else if (averages.dust >= 100) {
+            qualityStatuses.dust = "Medium";
+            scores.dust = 2;
+        } else {
+            qualityStatuses.dust = "Good";
+            scores.dust = 1;
+        }
+
+        return { qualityStatuses, scores };
+    };
+
+    const sendDataToBackend = async (data) => {
+        try {
+            const response = await fetch("http://4.231.99.148:8000/pollution/api/save-status/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
+            console.log("Data sent successfully:", result);
+        } catch (error) {
+            console.error("Error sending data to backend:", error);
+        }
+    };
+    useEffect(() => {
+        if (overallStatus) {
+            // Prepare data to send to backend
+            const dataToSend = {
+                timestamp: new Date().toISOString(),
+                overall_status: overallStatus,
+                averages: { ...averages },
+                quality: { ...quality },
+            };
+
+            sendDataToBackend(dataToSend);
+        }
+    }, [overallStatus]);
+
+
+
 
     // Polling every 3 seconds
     useEffect(() => {
@@ -243,32 +374,51 @@ const Dashboard = () => {
             <div className="averages-section">
                 <h3>Today's Live Update</h3>
                 <div className="averages-cards">
-                    <div className="card">
-                        <h4>Temperature</h4>
-                        <p>{averages.temperature}°</p>
-                    </div>
-                    <div className="card">
-                        <h4>Humidity</h4>
-                        <p>{averages.humidity}%</p>
-                    </div>
-                    <div className="card">
-                        <h4>Air Quality (CO₂, VOCs, NH₃)</h4>
-                        <p>{averages.air_quality} PPM</p>
-                    </div>
-                    <div className="card">
-                        <h4>Combustible Gases (LPG, Methane, Smoke)  </h4>
-                        <p>{averages.gas_mq2} PPM</p>
-                    </div>
-                    <div className="card">
-                        <h4>Methane Gas (CH₄)</h4>
-                        <p>{averages.gas_mq4} PPM</p>
-                    </div>
-                    <div className="card">
-                        <h4>Dust</h4>
-                        <p>{averages.dust} µg/m³</p>
-                    </div>
+                    {["temperature", "humidity", "air_quality", "gas_mq2", "gas_mq4", "dust"].map((key) => (
+                        <div className="card" key={key}>
+                            <h4>{key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ")}</h4>
+                            <p>
+                                {averages[key]}{" "}
+                                {key === "temperature" ? "°C" : key === "humidity" ? "%" : key === "dust" ? "µg/m³" : "PPM"}
+                            </p>
+                            <p>
+                                <span
+                                    style={{
+                                        fontWeight: "bold",
+                                        color:
+                                            quality[key] === "Good"
+                                                ? "green"
+                                                : quality[key] === "Medium"
+                                                    ? "orange"
+                                                    : "red",
+                                    }}
+                                >
+                                    {quality[key]}
+                                </span>
+                            </p>
+                        </div>
+                    ))}
                 </div>
+
             </div>
+
+            <div className="overall-status">
+                <h3>Overall Environment Status</h3>
+                <p
+                    style={{
+                        fontWeight: "bold",
+                        color:
+                            overallStatus === "Good"
+                                ? "green"
+                                : overallStatus === "Moderate"
+                                    ? "orange"
+                                    : "red",
+                    }}
+                >
+                    {overallStatus}
+                </p>
+            </div>
+
             <div className="chart-grid">
                 {["temperature", "humidity", "air_quality", "gas_mq2", "gas_mq4", "dust"].map((key) => (
                     <div className="chart-wrapper" key={key}>

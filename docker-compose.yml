@@ -49,4 +49,3 @@ services:
       - db
 volumes:
   mysql_volume:
-  frontend:
