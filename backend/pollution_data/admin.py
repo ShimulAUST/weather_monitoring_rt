@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import PollutionData
+from .models import PollutionData, OverallStatusLog
+
 
 class PollutionDataAdmin(admin.ModelAdmin):
     list_display = (
@@ -10,7 +11,6 @@ class PollutionDataAdmin(admin.ModelAdmin):
         'gas_mq2',
         'gas_mq4',
         'dust',
-        'air_quality_level',
     )
 
     list_filter = ('timestamp', 'air_quality', 'gas_mq2', 'gas_mq4', 'dust')
@@ -22,5 +22,7 @@ class PollutionDataAdmin(admin.ModelAdmin):
         return obj.air_quality_level()
     air_quality_level.short_description = 'Air Quality Level'
 
+
 # Register the model with the custom admin class
 admin.site.register(PollutionData, PollutionDataAdmin)
+admin.site.register(OverallStatusLog)
