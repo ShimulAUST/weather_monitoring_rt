@@ -38,7 +38,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'lifeeasy.fra@gmail.com'  # Your email address
 # Your email password (use app password if 2FA is enabled)
-EMAIL_HOST_PASSWORD = 'G3tch@tGTP2024'
+EMAIL_HOST_PASSWORD = 'ysdkixdmeccjssor'
 
 
 CORS_ALLOWED_ORIGINS = [
