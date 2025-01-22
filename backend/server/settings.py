@@ -42,9 +42,9 @@ EMAIL_HOST_PASSWORD = 'ysdkixdmeccjssor'
 
 
 # Twilio Settings
-TWILIO_ACCOUNT_SID = ''  # ''
-TWILIO_AUTH_TOKEN = ''  # ''
-TWILIO_PHONE_NUMBER = '+12515013953'  # Your Twilio number
+# TWILIO_ACCOUNT_SID = ''  # ''
+# TWILIO_AUTH_TOKEN = ''  # ''
+# TWILIO_PHONE_NUMBER = '+12515013953'  # Your Twilio number
 
 
 CORS_ALLOWED_ORIGINS = [
