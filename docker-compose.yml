@@ -23,6 +23,14 @@ services:
       dockerfile: Dockerfile
     environment:
       - DEBUG=true
+      - EMAIL_HOST=smtp.your-email-provider.com
+      - EMAIL_PORT=587
+      - EMAIL_HOST_USER=your-email@example.com
+      - EMAIL_HOST_PASSWORD=your-email-password
+      - EMAIL_USE_TLS=true
+      - DEFAULT_FROM_EMAIL=your-email@example.com
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
@@ -30,6 +38,8 @@ services:
       - ./backend:/backend
     depends_on:
       - db
+      - redis # Add Redis as a dependency for Celery
+
   frontend:
     container_name: frontend-cnt
     image: frontend-image
@@ -47,5 +57,39 @@ services:
     depends_on:
       - backend
       - db
+
+  redis:
+    container_name: redis-cnt
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  celery:
+    container_name: celery-cnt
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DEBUG=true
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    command: celery -A backend worker --loglevel=info
+    depends_on:
+      - backend
+      - redis
+
+  celery-beat:
+    container_name: celery-beat-cnt
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    command: celery -A backend beat --loglevel=info
+    depends_on:
+      - celery
+      - redis
+
 volumes:
   mysql_volume:
