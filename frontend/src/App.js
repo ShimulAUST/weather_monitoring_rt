@@ -472,7 +472,7 @@ const App = () => {
                 </main>
 
                 <footer className="footer">
-                    <p>&copy; 2024. All rights reserved.</p>
+                    <p>&copy; 2025. All rights reserved.</p>
                 </footer>
             </div>
         </Router>

@@ -12,15 +12,16 @@ def check_and_send_weather_emails():
     for log in logs:
         if log.overall_status == 'Good':
             subject = 'Weather Update: Good'
-            message = f"The weather condition is good as of {log.timestamp}."
+            message = f"The weather condition is good as of \
+                {log.timestamp}."
         elif log.overall_status == 'Bad':
             subject = 'Weather Update: Bad'
-            message = f"Alert! The weather condition is bad as of {
-                log.timestamp}."
+            message = f"Alert! The weather condition is bad as of \
+                {log.timestamp}."
         elif log.overall_status == 'Moderate':
             subject = 'Weather Update: Moderate'
-            message = f"The weather condition is moderate as of {
-                log.timestamp}."
+            message = f"The weather condition is moderate as of \
+                {log.timestamp}."
         else:
             continue
 
