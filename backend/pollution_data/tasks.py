@@ -1,6 +1,6 @@
 from celery import shared_task
 from .models import OverallStatusLog
-from .utils import send_weather_email
+from .utils import send_weather_email, send_sms
 
 
 @shared_task
@@ -26,3 +26,27 @@ def check_and_send_weather_emails():
             continue
 
         send_weather_email(subject, message, recipients)
+
+# Task for sending SMS
+
+
+@shared_task
+def check_and_send_weather_sms():
+    logs = OverallStatusLog.objects.all()  # Add filters if necessary
+    sms_recipients = ['+4915205835258', '+4917685959216']
+
+    for log in logs:
+        if log.overall_status == 'Good':
+            message = f"The weather condition is GOOD as of \
+                {log.timestamp}. Enjoy your day!"
+        elif log.overall_status == 'Moderate':
+            message = f"The weather condition is MODERATE as of \
+                {log.timestamp}. Stay cautious!"
+        elif log.overall_status == 'Bad':
+            message = f"ALERT: The weather condition is BAD as of \
+                {log.timestamp}. Stay safe!"
+        else:
+            continue
+
+        for recipient in sms_recipients:
+            send_sms(to=recipient, body=message)

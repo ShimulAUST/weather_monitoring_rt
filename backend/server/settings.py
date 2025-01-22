@@ -41,6 +41,12 @@ EMAIL_HOST_USER = 'lifeeasy.fra@gmail.com'  # Your email address
 EMAIL_HOST_PASSWORD = 'ysdkixdmeccjssor'
 
 
+# Twilio Settings
+TWILIO_ACCOUNT_SID = 'AC639fe539a1563e92e816176c256b6ed0'
+TWILIO_AUTH_TOKEN = 'cf9671697db6a676c753f3a9026989fc'
+TWILIO_PHONE_NUMBER = '+12515013953'  # Your Twilio number
+
+
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1',
     'http://localhost:',
@@ -68,6 +74,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'pollution_data',
     'corsheaders',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
