@@ -374,9 +374,16 @@ const Dashboard = () => {
             <div className="averages-section">
                 <h3>Today's Live Update</h3>
                 <div className="averages-cards">
-                    {["temperature", "humidity", "air_quality", "gas_mq2", "gas_mq4", "dust"].map((key) => (
+                    {[
+                        { key: "temperature", title: "Temperature" },
+                        { key: "humidity", title: "Humidity" },
+                        { key: "air_quality", title: "Air Quality" },
+                        { key: "gas_mq2", title: "Combustible Gases" },
+                        { key: "gas_mq4", title: "Methane Gas" },
+                        { key: "dust", title: "Dust Concentration" },
+                    ].map(({ key, title }) => (
                         <div className="card" key={key}>
-                            <h4>{key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ")}</h4>
+                            <h4>{title}</h4>
                             <p>
                                 {averages[key]}{" "}
                                 {key === "temperature" ? "°C" : key === "humidity" ? "%" : key === "dust" ? "µg/m³" : "PPM"}
@@ -399,8 +406,8 @@ const Dashboard = () => {
                         </div>
                     ))}
                 </div>
-
             </div>
+
 
             <div className="overall-status">
                 <h3>Overall Environment Status</h3>
@@ -420,9 +427,16 @@ const Dashboard = () => {
             </div>
 
             <div className="chart-grid">
-                {["temperature", "humidity", "air_quality", "gas_mq2", "gas_mq4", "dust"].map((key) => (
+                {[
+                    { key: "temperature", title: "Temperature" },
+                    { key: "humidity", title: "Humidity" },
+                    { key: "air_quality", title: "Air Quality" },
+                    { key: "gas_mq2", title: "Combustible Gases" },
+                    { key: "gas_mq4", title: "Methane Gas" },
+                    { key: "dust", title: "Dust Concentration" },
+                ].map(({ key, title }) => (
                     <div className="chart-wrapper" key={key}>
-                        <h3>{key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ")}</h3>
+                        <h3>{title}</h3>
                         <label>
                             Time Range:
                             <select
@@ -439,10 +453,20 @@ const Dashboard = () => {
                                 <option value="last6months">Last 6 Months</option>
                             </select>
                         </label>
-                        <canvas ref={{ temperature: tempRef, humidity: humidityRef, air_quality: airQualityRef, gas_mq2: gasMq2Ref, gas_mq4: gasMq4Ref, dust: dustRef }[key]}></canvas>
+                        <canvas
+                            ref={{
+                                temperature: tempRef,
+                                humidity: humidityRef,
+                                air_quality: airQualityRef,
+                                gas_mq2: gasMq2Ref,
+                                gas_mq4: gasMq4Ref,
+                                dust: dustRef,
+                            }[key]}
+                        ></canvas>
                     </div>
                 ))}
             </div>
+
         </div>
     );
 };
